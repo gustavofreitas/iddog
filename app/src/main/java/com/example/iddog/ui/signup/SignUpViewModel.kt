@@ -1,4 +1,4 @@
-package com.example.iddog.ui
+package com.example.iddog.ui.signup
 
 import android.util.Log
 import com.example.iddog.api.getDogService
@@ -15,7 +15,7 @@ class SignUpViewModel {
 
         val request = SignUpRequest(email)
 
-        getDogService().postSignUp(request).enqueue(object : Callback<SignUpResponse> {
+        getDogService().signUp(request).enqueue(object : Callback<SignUpResponse> {
             override fun onFailure(call: Call<SignUpResponse>, t: Throwable) {
                 onError(t.message)
             }

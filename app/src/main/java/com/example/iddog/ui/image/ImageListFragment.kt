@@ -1,4 +1,4 @@
-package com.example.iddog.ui
+package com.example.iddog.ui.image
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
@@ -7,16 +7,26 @@ import android.animation.ObjectAnimator
 import android.graphics.Point
 import android.graphics.Rect
 import android.graphics.RectF
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
+import android.support.v4.app.Fragment
+import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
+import android.widget.Toast
 import com.example.iddog.R
-import kotlinx.android.synthetic.main.activity_list.*
+import com.example.iddog.api.getPicasso
+import com.example.iddog.ui.signup.SignUpActivity
+import com.google.android.flexbox.AlignItems
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexWrap
+import com.google.android.flexbox.FlexboxLayoutManager
+import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.fragment_image_list.*
 
-class ListActivity : AppCompatActivity() {
+class ImageListFragment : Fragment() {
 
     // Hold a reference to the current animator,
     // so that it can be canceled mid-way.
@@ -27,29 +37,47 @@ class ListActivity : AppCompatActivity() {
     // very frequently.
     private var shortAnimationDuration: Int = 0
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_list)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.fragment_image_list, container, false)
 
-        val urls: List<String> = listOf("Lucario", "Lucario", "Lucario", "Lucario", "Lucario",
-            "Lucario", "Lucario", "Lucario", "Lucario", "Lucario")
+        val bundle: Bundle? = arguments
+        val category: String? = bundle?.getString("category")
 
-        photo_recycler.layoutManager = LinearLayoutManager(this)
-        photo_recycler.adapter = PhotoAdapter(urls, zoomAnimator)
-
+        ImageListViewModel().getList(category, onSuccess, onError)
         // Retrieve and cache the system's default "short" animation time.
         shortAnimationDuration = resources.getInteger(android.R.integer.config_shortAnimTime)
+
+        return view
     }
 
-    private val zoomAnimator = fun(thumbView: View, imageResId: Int) {
+    private val onError = fun(e: String?) {
+        Toast.makeText(this.context, "Error on SignUp: $e", Toast.LENGTH_SHORT)
+            .show()
+        Log.e(SignUpActivity::class.java.toString(), e)
+    }
+
+    private val onSuccess = fun(list: List<String>){
+        Log.d("Fragment", "Sim, esta passando por aqui")
+        val flexBoxLayoutManager = FlexboxLayoutManager(this.context).apply {
+            flexWrap = FlexWrap.WRAP
+            flexDirection = FlexDirection.ROW
+            alignItems = AlignItems.STRETCH
+        }
+        photo_recycler.apply {
+            layoutManager = flexBoxLayoutManager
+            adapter = ImageListAdapter(list, zoomAnimator)
+        }
+    }
+
+    private val zoomAnimator = fun(thumbView: View, url: String) {
         // If there's an animation in progress, cancel it
         // immediately and proceed with this one.
         currentAnimator?.cancel()
 
         val expandedImageView: ImageView = expanded_image
         // Load the high-resolution "zoomed-in" image.
-        expandedImageView.setImageResource(imageResId)
-
+        getPicasso(thumbView.context).load(url).into(expandedImageView)
         // Calculate the starting and ending bounds for the zoomed-in image.
         // This step involves lots of math. Yay, math.
         val startBoundsInt = Rect()
@@ -175,4 +203,14 @@ class ListActivity : AppCompatActivity() {
         }
     }
 
+    companion object {
+        fun newInstance(category: String) : ImageListFragment {
+            val fragment = ImageListFragment()
+            val bundle = Bundle()
+            bundle.putString("category", category)
+            fragment.arguments = bundle
+
+            return fragment
+        }
+    }
 }

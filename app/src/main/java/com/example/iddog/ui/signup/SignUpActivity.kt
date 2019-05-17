@@ -1,4 +1,4 @@
-package com.example.iddog.ui
+package com.example.iddog.ui.signup
 
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
@@ -8,21 +8,21 @@ import com.example.iddog.utils.isValidEmail
 import android.util.Log
 import android.widget.Toast
 import com.example.iddog.R
-import kotlinx.android.synthetic.main.activity_main.*
+import com.example.iddog.ui.image.ImageListActivity
+import kotlinx.android.synthetic.main.activity_signup.*
 
 class SignUpActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_signup)
         signup_button.setOnClickListener {
             signUp()
         }
     }
 
     private val onSuccess = fun() {
-        val intent = Intent(this, ListActivity::class.java)
-        startActivity(intent)
+        startActivity(Intent(this, ImageListActivity::class.java))
     }
 
     private val onError = fun(e: String?) {
@@ -32,14 +32,15 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun signUp() {
-        email_text.validate(
-            { s -> s.isValidEmail() },
-            "Valid email address required"
-        )
-
-        if (email_text.error.isNullOrEmpty()) {
-            val email: String = email_text.text.toString()
-            SignUpViewModel().signUp(email, onSuccess, onError)
+        email_text.apply {
+            validate(
+                { s -> s.isValidEmail() },
+                "Valid email address required"
+            )
+            if (error.isNullOrEmpty()) {
+                SignUpViewModel()
+                    .signUp(this.text.toString(), onSuccess, onError)
+            }
         }
     }
 }

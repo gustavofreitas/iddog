@@ -2,4 +2,9 @@
   <string name="app_name">IdDog</string>
   <string name="email">e-mail</string>
   <string name="signup">signup</string>
+  <string name="title_activity_image_list">ImageListActivity</string>
+  <string name="husky">Husky</string>
+  <string name="labrador">Labrador</string>
+  <string name="hound">Hound</string>
+  <string name="pug">Pug</string>
 </resources>
