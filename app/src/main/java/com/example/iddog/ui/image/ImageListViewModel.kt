@@ -1,9 +1,7 @@
 package com.example.iddog.ui.image
 
 import androidx.lifecycle.ViewModel
-import com.example.iddog.data.Repository
-import com.example.iddog.data.api.FeedApiData
-import com.example.iddog.model.Feed
+import com.example.iddog.data.api.DogApiData
 import com.example.iddog.utils.DoAsync
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -17,7 +15,7 @@ class ImageListViewModel : ViewModel() {
     ) {
 
         DoAsync {
-            FeedApiData().get(category!!)
+            DogApiData().get(category!!)
                 .subscribeOn(Schedulers.io())
                 .takeLast(1)
                 .observeOn(AndroidSchedulers.mainThread())

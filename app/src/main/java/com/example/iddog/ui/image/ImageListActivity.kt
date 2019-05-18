@@ -12,29 +12,29 @@ class ImageListActivity : AppCompatActivity() {
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_husky -> {
-                trocaFragment(getString(R.string.husky))
+                cahngeFragment(getString(R.string.husky))
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_hound -> {
-                trocaFragment(getString(R.string.hound))
+                cahngeFragment(getString(R.string.hound))
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_labrador -> {
-                trocaFragment(getString(R.string.labrador))
+                cahngeFragment(getString(R.string.labrador))
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_pug -> {
-                trocaFragment(getString(R.string.pug))
+                cahngeFragment(getString(R.string.pug))
                 return@OnNavigationItemSelectedListener true
             }
         }
         false
     }
 
-    private fun trocaFragment(texto: String) {
+    private fun cahngeFragment(category: String) {
         val ft = supportFragmentManager.beginTransaction()
         val fragment =
-            ImageListFragment.newInstance(texto.toLowerCase())
+            ImageListFragment.newInstance(category.toLowerCase())
         ft.replace(R.id.flContainer, fragment)
         ft.addToBackStack(null)
         ft.commit()
@@ -52,7 +52,7 @@ class ImageListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image_list)
 
-        trocaFragment(getString(R.string.husky))
+        cahngeFragment(getString(R.string.husky))
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
     }

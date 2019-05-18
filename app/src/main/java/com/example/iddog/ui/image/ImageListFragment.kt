@@ -69,7 +69,7 @@ class ImageListFragment : Fragment() {
             alignItems = AlignItems.STRETCH
         }
         photo_recycler.layoutManager = flexBoxLayoutManager
-        photo_recycler.adapter = ImageListAdapter(imageUrls, zoomAnimator)
+        photo_recycler.adapter = ImageListAdapter(imageUrls, expanded_image)
 
     }
 

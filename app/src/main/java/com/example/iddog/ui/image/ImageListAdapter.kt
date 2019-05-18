@@ -11,7 +11,7 @@ import com.google.android.flexbox.FlexboxLayoutManager
 
 
 
-class ImageListAdapter(private val dogs: List<String>, private val zoomAnimator: (View, String) -> Unit): RecyclerView.Adapter<ImageListAdapter.ImageViewHolder>() {
+class ImageListAdapter(private val dogs: List<String>, internal val zoomedImagePlaceholder: View): RecyclerView.Adapter<ImageListAdapter.ImageViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val view = layoutInflater.inflate(R.layout.image_item, parent, false)
@@ -24,17 +24,21 @@ class ImageListAdapter(private val dogs: List<String>, private val zoomAnimator:
     }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
-        holder.bindView(dogs[position], zoomAnimator)
+        holder.bindView(dogs[position], zoomedImagePlaceholder)
     }
 
     class ImageViewHolder(private val view: View): RecyclerView.ViewHolder(view) {
-        fun bindView(url: String, zoomAnimator: (View, String) -> Unit){
+        fun bindView(url: String, zoom: View){
             val imageView = view.findViewById<ImageView>(R.id.dog_image)
 
             getPicasso(view.context).load(url).into(imageView)
 
             imageView.setOnClickListener {
-                zoomAnimator(it, url)
+                getPicasso(zoom.context).load(url).into(zoom as ImageView)
+                zoom.visibility = View.VISIBLE
+                zoom.setOnClickListener {
+                    it.visibility = View.INVISIBLE
+                }
             }
 
             val lp = imageView.layoutParams

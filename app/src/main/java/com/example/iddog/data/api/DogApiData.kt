@@ -8,11 +8,11 @@ import com.example.iddog.model.Token
 import io.reactivex.Observable
 import retrofit2.Call
 
-class FeedApiData {
+class DogApiData {
 
     private val token = Token(appContext()).request()
 
-    private val api = APIClient<DogService>(token)
+    private val api = ApiClient<DogService>(token)
         .getClient(DogService::class.java)
 
     fun get(search: String): Observable<Feed> {
