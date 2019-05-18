@@ -1,10 +1,10 @@
 package com.example.iddog.ui.image
 
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.design.widget.BottomNavigationView
+import androidx.appcompat.app.AppCompatActivity
 import com.example.iddog.R
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_image_list.*
 
 class ImageListActivity : AppCompatActivity() {

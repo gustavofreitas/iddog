@@ -1,35 +1,30 @@
 package com.example.iddog.ui.image
 
-import android.util.Log
-import com.example.iddog.api.getDogService
+import androidx.lifecycle.ViewModel
+import com.example.iddog.data.Repository
 import com.example.iddog.model.Feed
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.example.iddog.utils.DoAsync
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
-class ImageListViewModel {
-    fun getList(category: String?, onSuccess: (List<String>) -> Unit, onError: (String?) -> Unit){
+class ImageListViewModel : ViewModel() {
 
-        val token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJpZGRvZy1zZXJ2aWNlIiwic3ViIjoiNWNkZTIzOWI1YTk0MDExMjM3YTVkMmFhIiwiaWF0IjoxNTU4MDYxOTc5LCJleHAiOjE1NTkzNTc5Nzl9.90lxR7WOlf04bM803PVNq9xqu0-rYlc2cajUwEPmMS4"
+    private val feedRepo = Repository.of<Feed>()
 
-        getDogService(token).feed(category).enqueue(object : Callback<Feed> {
-            override fun onFailure(call: Call<Feed>, t: Throwable) {
-                onError(t.message)
-            }
+    fun getList(
+        category: String?,
+        onSuccess: (List<String>) -> Unit,
+        onError: (String?) -> Unit
+    ) {
 
-            override fun onResponse(
-                call: Call<Feed>,
-                response: Response<Feed>
-            ) {
-                response.body()?.let {
-                    val list: List<String> = it.list
-                    Log.d("response user", it.toString())
-                    onSuccess(list)
-                }
-
-            }
-
-        })
+        DoAsync {
+            feedRepo.get(category!!)
+                .subscribeOn(Schedulers.io())
+                .takeLast(1)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ onSuccess(it.list) }, { onError(it.message) })
+        }.execute()
 
     }
+
 }

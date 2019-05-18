@@ -1,5 +1,6 @@
 package com.example.iddog.utils
 
+import android.os.AsyncTask
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Patterns
@@ -28,3 +29,16 @@ fun String.isValidEmail(): Boolean
         = this.isNotEmpty() &&
         Patterns.EMAIL_ADDRESS.matcher(this).matches()
 
+open class DoAsync(open val handler: () -> Unit) : AsyncTask<Void, Void, Void>() {
+    override fun doInBackground(vararg params: Void?): Void? {
+        handler()
+        return null
+    }
+}
+
+class DoAsyncWithCallback( override val handler: () -> Unit, val callback: () -> Unit) : DoAsync(handler) {
+
+    override fun onPostExecute(result: Void?) {
+        callback()
+    }
+}

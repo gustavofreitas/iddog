@@ -8,7 +8,7 @@ import android.graphics.Point
 import android.graphics.Rect
 import android.graphics.RectF
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -16,14 +16,14 @@ import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProviders
 import com.example.iddog.R
-import com.example.iddog.api.getPicasso
+import com.example.iddog.data.api.getPicasso
 import com.example.iddog.ui.signup.SignUpActivity
 import com.google.android.flexbox.AlignItems
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_image_list.*
 
 class ImageListFragment : Fragment() {
@@ -37,6 +37,8 @@ class ImageListFragment : Fragment() {
     // very frequently.
     private var shortAnimationDuration: Int = 0
 
+    private lateinit var model: ImageListViewModel
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_image_list, container, false)
@@ -44,7 +46,9 @@ class ImageListFragment : Fragment() {
         val bundle: Bundle? = arguments
         val category: String? = bundle?.getString("category")
 
-        ImageListViewModel().getList(category, onSuccess, onError)
+        model = ViewModelProviders.of(this).get(ImageListViewModel::class.java)
+
+        model.getList(category, onSuccess, onError)
         // Retrieve and cache the system's default "short" animation time.
         shortAnimationDuration = resources.getInteger(android.R.integer.config_shortAnimTime)
 
@@ -57,17 +61,16 @@ class ImageListFragment : Fragment() {
         Log.e(SignUpActivity::class.java.toString(), e)
     }
 
-    private val onSuccess = fun(list: List<String>){
+    private val onSuccess = fun(imageUrls: List<String>){
         Log.d("Fragment", "Sim, esta passando por aqui")
         val flexBoxLayoutManager = FlexboxLayoutManager(this.context).apply {
             flexWrap = FlexWrap.WRAP
             flexDirection = FlexDirection.ROW
             alignItems = AlignItems.STRETCH
         }
-        photo_recycler.apply {
-            layoutManager = flexBoxLayoutManager
-            adapter = ImageListAdapter(list, zoomAnimator)
-        }
+        photo_recycler.layoutManager = flexBoxLayoutManager
+        photo_recycler.adapter = ImageListAdapter(imageUrls, zoomAnimator)
+
     }
 
     private val zoomAnimator = fun(thumbView: View, url: String) {
