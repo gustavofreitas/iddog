@@ -1,8 +1,9 @@
 package com.example.iddog.data.api
 
 import android.content.Context
-import android.util.Log
+import com.example.iddog.App
 import com.squareup.picasso.Picasso
+import okhttp3.Cache
 import okhttp3.Interceptor
 import okhttp3.Interceptor.*
 import okhttp3.OkHttpClient
@@ -16,7 +17,13 @@ class APIClient<T>(val token: String? = null) {
     private val API_BASE_URL: String = "https://api-iddog.idwall.co"
 
     fun getClient(c: Class<T>): T {
-        val client: OkHttpClient = OkHttpClient.Builder().addInterceptor(ServiceInterceptor(token)).build()
+
+        val myCache = Cache(App.appContext().cacheDir, (50 * 1024).toLong())
+
+        val client: OkHttpClient = OkHttpClient
+            .Builder()
+            .cache(myCache)
+            .addInterceptor(ServiceInterceptor(token)).build()
 
         return Retrofit.Builder()
             .baseUrl(API_BASE_URL)
@@ -30,19 +37,23 @@ class APIClient<T>(val token: String? = null) {
 
 }
 
-class ServiceInterceptor(val token: String?) : Interceptor {
+class ServiceInterceptor(private val token: String?) : Interceptor {
 
     override fun intercept(chain: Chain): Response {
-        val requestBuilder = chain.request().newBuilder()
+        chain.request().newBuilder().apply {
+            addHeader("Content-Type","application/json")
 
-        requestBuilder.addHeader("Content-Type","application/json")
+            if(App.isNetworkAvailable())
+                addHeader("Cache-Control", "public, max-age=" + 60)
+            else
+                addHeader("Cache-Control", "public, only-if-cached, max-stale=" + (60 * 60 * 24 * 7))
 
-        if (!token.isNullOrEmpty()){
-            requestBuilder.addHeader("Authorization", token.toString())
-            Log.d("Authorization img req", token)
+            if (token?.isNotEmpty() == true)
+                addHeader("Authorization", token.toString())
+
+
+            return chain.proceed(build())
         }
-
-        return chain.proceed(requestBuilder.build())
     }
 
 }

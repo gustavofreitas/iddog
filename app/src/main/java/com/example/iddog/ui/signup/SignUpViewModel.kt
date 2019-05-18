@@ -4,6 +4,7 @@ package com.example.iddog.ui.signup
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import com.example.iddog.data.api.FeedApiData
 import com.example.iddog.data.api.getDogService
 import com.example.iddog.model.SignUpRequest
 import com.example.iddog.model.SignUpResponse
@@ -19,7 +20,9 @@ class SignUpViewModel(application: Application) : AndroidViewModel(application) 
 
         val request = SignUpRequest(email)
 
-        getDogService().signUp(request).enqueue(object : Callback<SignUpResponse> {
+        FeedApiData()
+            .signUp(request)
+            .enqueue(object : Callback<SignUpResponse> {
             override fun onFailure(call: Call<SignUpResponse>, t: Throwable) {
                 onError(t.message)
             }
