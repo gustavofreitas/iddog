@@ -6,7 +6,7 @@ import com.example.iddog.data.entity.FeedEntity
 @Dao
 abstract class FeedDao{
 
-    @Query("SELECT * FROM feed WHERE categoty = :category")
+    @Query("SELECT * FROM feed WHERE category = :category")
     abstract fun getAll(category: String): List<FeedEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

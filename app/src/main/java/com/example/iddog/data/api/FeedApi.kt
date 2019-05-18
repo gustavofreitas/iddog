@@ -17,19 +17,6 @@ class FeedApiData : DataSource<Feed> {
         .getClient(DogService::class.java)
 
     override fun get(search: String): Observable<Feed> {
-        Log.d(this::class.toString(), "A api foi chamada")
-        val retorno = api.feed(search)
-        Log.d(this::class.toString(), retorno.toString())
-
-        return retorno
+        return api.feed(search)
     }
-
-    override fun save(item: Feed): Observable<Feed> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun remove(item: Feed): Completable {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
 }

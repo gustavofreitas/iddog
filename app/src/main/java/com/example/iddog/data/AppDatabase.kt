@@ -8,14 +8,14 @@ import com.example.iddog.data.db.FeedDao
 import com.example.iddog.data.entity.FeedEntity
 
 @Database(entities = [FeedEntity::class],
-    version = 1,
+    version = 2,
     exportSchema = false)
 abstract class AppDatabase: RoomDatabase() {
 
     abstract fun getFeedDao(): FeedDao
 
     companion object{
-        private const val DB_NAME = "IdDog.db"
+        private const val DB_NAME = "IdDogCache.db"
 
         @Volatile
         private var INSTANCE: AppDatabase? = null
