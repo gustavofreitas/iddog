@@ -55,6 +55,7 @@ class ImageListActivity : AppCompatActivity() {
 
         changeFragment(getString(R.string.husky))
         navigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
+        navigation.itemIconTintList = null
 
     }
 

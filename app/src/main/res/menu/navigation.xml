@@ -3,22 +3,22 @@
 
   <item
     android:id="@+id/navigation_husky"
-    android:icon="@drawable/ic_launcher_background"
+    android:icon="@drawable/ic_husky"
     android:title="@string/husky" />
 
   <item
     android:id="@+id/navigation_hound"
-    android:icon="@drawable/ic_launcher_background"
+    android:icon="@drawable/ic_hound"
     android:title="@string/hound" />
 
   <item
     android:id="@+id/navigation_labrador"
-    android:icon="@drawable/ic_launcher_background"
+    android:icon="@drawable/ic_labrador"
     android:title="@string/labrador" />
 
   <item
     android:id="@+id/navigation_pug"
-    android:icon="@drawable/ic_launcher_background"
+    android:icon="@drawable/ic_pug"
     android:title="@string/pug" />
 
 </menu>
