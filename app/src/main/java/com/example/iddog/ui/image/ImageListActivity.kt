@@ -9,29 +9,30 @@ import kotlinx.android.synthetic.main.activity_image_list.*
 
 class ImageListActivity : AppCompatActivity() {
 
-    private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+    private val onNavigationItemSelectedListener =
+        BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_husky -> {
-                cahngeFragment(getString(R.string.husky))
+                changeFragment(getString(R.string.husky))
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_hound -> {
-                cahngeFragment(getString(R.string.hound))
+                changeFragment(getString(R.string.hound))
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_labrador -> {
-                cahngeFragment(getString(R.string.labrador))
+                changeFragment(getString(R.string.labrador))
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_pug -> {
-                cahngeFragment(getString(R.string.pug))
+                changeFragment(getString(R.string.pug))
                 return@OnNavigationItemSelectedListener true
             }
         }
         false
     }
 
-    private fun cahngeFragment(category: String) {
+    private fun changeFragment(category: String) {
         val ft = supportFragmentManager.beginTransaction()
         val fragment =
             ImageListFragment.newInstance(category.toLowerCase())
@@ -52,8 +53,8 @@ class ImageListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image_list)
 
-        cahngeFragment(getString(R.string.husky))
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+        changeFragment(getString(R.string.husky))
+        navigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
 
     }
 

@@ -1,11 +1,9 @@
 package com.example.iddog.data.api
 
-import android.content.Context
 import com.example.iddog.App
-import com.squareup.picasso.Picasso
 import okhttp3.Cache
 import okhttp3.Interceptor
-import okhttp3.Interceptor.*
+import okhttp3.Interceptor.Chain
 import okhttp3.OkHttpClient
 import okhttp3.Response
 import retrofit2.Retrofit
@@ -35,35 +33,28 @@ class ApiClient<T>(val token: String? = null) {
 
     }
 
-}
+    class ServiceInterceptor(private val token: String?) : Interceptor {
 
-class ServiceInterceptor(private val token: String?) : Interceptor {
+        override fun intercept(chain: Chain): Response {
+            chain.request().newBuilder().apply {
+                addHeader("Content-Type", "application/json")
 
-    override fun intercept(chain: Chain): Response {
-        chain.request().newBuilder().apply {
-            addHeader("Content-Type","application/json")
+                if (App.isNetworkAvailable())
+                    addHeader("Cache-Control", "public, max-age=" + 60)
+                else
+                    addHeader(
+                        "Cache-Control",
+                        "public, only-if-cached, max-stale=" + (60 * 60 * 24 * 7)
+                    )
 
-            if(App.isNetworkAvailable())
-                addHeader("Cache-Control", "public, max-age=" + 60)
-            else
-                addHeader("Cache-Control", "public, only-if-cached, max-stale=" + (60 * 60 * 24 * 7))
-
-            if (token?.isNotEmpty() == true)
-                addHeader("Authorization", token.toString())
+                if (token?.isNotEmpty() == true)
+                    addHeader("Authorization", token.toString())
 
 
-            return chain.proceed(build())
+                return chain.proceed(build())
+            }
         }
-    }
 
+    }
 }
 
-private var picasso: Picasso? = null
-fun getPicasso(context: Context) : Picasso {
-    if (picasso == null) {
-        picasso = Picasso
-            .Builder(context)
-            .build()
-    }
-    return picasso!!
-}

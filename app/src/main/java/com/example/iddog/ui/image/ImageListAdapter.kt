@@ -6,12 +6,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.iddog.R
-import com.example.iddog.data.api.getPicasso
 import com.google.android.flexbox.FlexboxLayoutManager
+import com.squareup.picasso.Picasso
 
-
-
-class ImageListAdapter(private val dogs: List<String>, internal val zoomedImagePlaceholder: View): RecyclerView.Adapter<ImageListAdapter.ImageViewHolder>() {
+class ImageListAdapter(private val dogs: List<String>, private val expandedImageView: ImageView) :
+    RecyclerView.Adapter<ImageListAdapter.ImageViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val view = layoutInflater.inflate(R.layout.image_item, parent, false)
@@ -24,20 +23,25 @@ class ImageListAdapter(private val dogs: List<String>, internal val zoomedImageP
     }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
-        holder.bindView(dogs[position], zoomedImagePlaceholder)
+        holder.bindView(dogs[position], expandedImageView)
     }
 
-    class ImageViewHolder(private val view: View): RecyclerView.ViewHolder(view) {
-        fun bindView(url: String, zoom: View){
-            val imageView = view.findViewById<ImageView>(R.id.dog_image)
+    class ImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private val imageView = view.findViewById<ImageView>(R.id.dog_image)
 
-            getPicasso(view.context).load(url).into(imageView)
+        fun bindView(url: String, expandedImageView: ImageView) {
+
+            val picasso: Picasso = Picasso.get()
+
+            picasso.load(url).into(imageView)
 
             imageView.setOnClickListener {
-                getPicasso(zoom.context).load(url).into(zoom as ImageView)
-                zoom.visibility = View.VISIBLE
-                zoom.setOnClickListener {
-                    it.visibility = View.INVISIBLE
+                expandedImageView.apply {
+                    picasso.load(url).into(this)
+                    visibility = View.VISIBLE
+                    setOnClickListener {
+                        it.visibility = View.INVISIBLE
+                    }
                 }
             }
 
@@ -47,5 +51,6 @@ class ImageListAdapter(private val dogs: List<String>, internal val zoomedImageP
             }
 
         }
+
     }
 }

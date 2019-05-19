@@ -3,7 +3,7 @@ package com.example.iddog.model
 import android.content.Context
 import android.content.SharedPreferences
 
-class Token(val context: Context) {
+class Token(context: Context) {
 
     private val PREFS_NAME = "ID_DOG"
     private val KEY = "LOGIN_TOKEN"
