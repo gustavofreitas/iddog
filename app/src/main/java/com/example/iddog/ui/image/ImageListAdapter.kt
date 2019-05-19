@@ -33,11 +33,15 @@ class ImageListAdapter(private val dogs: List<String>, private val expandedImage
 
             val picasso: Picasso = Picasso.get()
 
-            picasso.load(url).into(imageView)
+            picasso.load(url)
+                .placeholder(R.drawable.dog_placeholder)
+                .into(imageView)
 
             imageView.setOnClickListener {
                 expandedImageView.apply {
-                    picasso.load(url).into(this)
+                    picasso.load(url)
+                        .placeholder(R.drawable.dog_placeholder)
+                        .into(this)
                     visibility = View.VISIBLE
                     setOnClickListener {
                         it.visibility = View.INVISIBLE
